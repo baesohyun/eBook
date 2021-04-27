@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+.haside {
+	margin-top: 80px; 
+	top:170px;
+	left: 40px;
+	font-weight: normal;
+	font-size:14px; 
+	width: 200px;
+	height:500px;
+	font-family: Atomy-Bold;
+	text-align: center;
+}

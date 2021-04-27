@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.jinibooks.dao.maypage_myBook_mapper">
+<!-- 내서재 대여책  -->
+	<select id="selectMPMyBookRental" resultType="kr.co.jinibooks.domain.SearchMPMyBookRentalDomain" parameterType="String">
+		select flag, code, r.book_code, id, to_char(rental_start,'yyyy-mm-dd') rental_start,
+		to_char(rental_end,'yyyy-mm-dd') rental_end,img,title,author
+		from rental r, book b
+		where b.book_code=r.book_code and id=#{id}
+	</select>
+	
+<!-- 내서재 대여책  -->
+ 	<select id="selectMPMyBookPay" resultType="kr.co.jinibooks.domain.SearchMPMyBookPayDomain" parameterType="String">
+		select flag, code, id, p.book_code,img,title,author
+		from purchase p, book b
+		where b.book_code=p.book_code and id=#{id}
+	</select>
+	 
+	
+
+</mapper>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.jinibooks.dao.mainMapper">
+
+  <!-- 12/8 카테고리 코드 추가 -->
+  <!-- 메인 (추천 도서)1  -->
+  <select id="mainRecomendBook1" resultType="kr.co.jinibooks.domain.mainBookDomain">
+	select book_code, title, author, img ,code
+	from(select rownum r, book_code, title, author, img  ,code
+	from(select book_code, title, author, img,code
+	from book b, book_category c
+	where b.category_code=c.code
+	order by dbms_random.value))
+	where r between 1 and 5
+  </select>
+  
+  <!-- 메인 (추천 도서)2  -->
+  <select id="mainRecomendBook2" resultType="kr.co.jinibooks.domain.mainBookDomain">
+	select book_code, title, author, img,code
+	from(select rownum r, book_code, title, author, img,code
+			from(select book_code, title, author, img,code
+					from book b, book_category c
+					where b.category_code=c.code
+					order by dbms_random.value))
+	where r between 1 and 5
+  </select>
+  
+  
+  <!-- 메인 (종합 베스트 top5) -->
+<select id="mainTotalBestBook" resultType="kr.co.jinibooks.domain.mainBookDomain">
+	select book_code, title, author, rating, img, code
+	from (select rownum r, book_code, title, author, rating, img, code
+		from (select b.book_code, b.title, b.author, b.rating, b.img , bc.code
+					from book b, book_category bc
+					where (b.category_code(+)=bc.code) and b.rating=5
+					order by b.book_code))
+	where r between 1 and 5
+  </select>
+  
+  <!-- 메인 (키워드별 도서) ???-->
+<select id="mainPopularBook" resultType="kr.co.jinibooks.domain.mainBookDomain">
+	select book_code, title, author, rating, img, code
+	from (select rownum r, book_code, title, author, rating, img, code
+		from (select b.book_code, b.title, b.author, b.rating, b.img , bc.code
+					from book b, book_category bc, purchase p
+					where (b.category_code=bc.code) and(p.book_code=b.book_code)
+					order by p.pay_date desc))
+	where r between 1 and 5
+  </select>
+  
+  <!-- 메인 (신간) -->
+<select id="mainNewbook" resultType="kr.co.jinibooks.domain.mainBookDomain">
+
+	select book_code, title, author, rating, img,code
+	from(select rownum r, book_code, title, author, rating, img,code
+		from(select book_code, title, author, rating, img,code
+				from book b, book_category c
+				where b.category_code=c.code
+					order by pub_date desc))
+	where r between 1 and 5
+  </select>
+  
+  <!-- 메인 (공지사항 리스트) -->
+  <select id="mainNoticeList" resultType="kr.co.jinibooks.domain.MainNoticeDomain">
+  	select num, subject
+	from(select rownum r, num, subject
+			from(select num, subject
+						from notice
+						order by w_day desc))
+	where r between 1 and 7
+  </select>
+  
+  <!-- 메인 (자주하는 질문 리스트) -->
+  <select id="mainQuestionList" resultType="kr.co.jinibooks.domain.MainNoticeDomain">
+  	select num, subject
+	from(select rownum r, num, subject
+			from(select num, subject
+						from inquiry
+						order by w_day desc))
+	where r between 1 and 5
+  </select>
+  
+  <!-- 메인: 이달의 신간 조회  -->
+  <select id="newbook" resultType="kr.co.jinibooks.domain.newBookDomain">
+	select b.pub_date,b.sale_price,b.rental_price, b.book_code, b.img, b.title, b.author, b.company, b.intro, b.rating, bc.name, b.sale_class, b.sale_state,bc.code
+	from book b, book_category bc
+	where (b.category_code=bc.code) and to_char(b.input_date,'month')= to_char(sysdate, 'month') and to_char(b.input_date,'year')= to_char(sysdate, 'year')
+	order by pub_date desc
+  </select>
+  
+  <!-- 메인: 베스트  주간-->
+  <select id="bestWeekBook" resultType="kr.co.jinibooks.domain.cate_best_bookDomain">
+	select book_code, title, img, author, sale_price, rental_price, sale_class, sale_state,code
+	from(select rownum r, book_code, title, img, author, sale_price, rental_price, sale_class, sale_state,code
+			from(select distinct b.book_code, b.title, b.img, b.author, b.sale_price, b.rental_price, b.sale_class, b.sale_state, bc.code
+						from book b, book_category bc
+						where  b.category_code =bc.code and rating=5 and (b.input_date between to_char( sysdate-( (to_char(sysdate,'D')) -2 ), 'yyyy-mm-dd' ) and to_char( sysdate-( (to_char(sysdate,'D')) -2 )+4, 'yyyy-mm-dd' ))
+						order by rating desc))
+	where r between 1 and 20
+  </select>
+  
+  <!--
+  	select book_code, title, img, author, sale_price, rental_price, sale_class, sale_state, pub_date
+	from(select rownum r, book_code, title, img, author, sale_price, rental_price, sale_class, sale_state, pub_date
+			from(select book_code, title, img, author, sale_price, rental_price, sale_class, sale_state, pub_date
+						from book
+						where rating=5 and (pub_date between to_char( sysdate-( (to_char(sysdate,'D')) -2 ), 'yyyy-mm-dd' ) and to_char( sysdate-( (to_char(sysdate,'D')) -2 )+4, 'yyyy-mm-dd' ))
+						order by rating desc))
+	where r between 1 and 20
+    -->
+  
+  <!-- 메인: 베스트  월간-->
+  <select id="bestMonthBook" resultType="kr.co.jinibooks.domain.cate_best_bookDomain">
+		select book_code, title, img, author, sale_price, rental_price, sale_class, sale_state, pub_date,code
+		from(select rownum r, book_code, title, img, author, sale_price, rental_price, sale_class, sale_state, pub_date,code
+				from(select distinct book_code, title, img, author, sale_price, rental_price, sale_class, sale_state, pub_date,code
+							from book b, book_category bc
+							where b.category_code =bc.code and rating=5 and trunc(input_date,'mm')=trunc(sysdate,'mm')
+							order by rating desc))
+		where r between 1 and 20
+  </select>
+  
+  
+</mapper>

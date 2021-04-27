@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.jinibooks.dao.CalcListMapper"> <!--  namespace : 패키지와 같음 -->
+
+<select id="selectTotalCount" resultType="int" parameterType="kr.co.jinibooks.vo.SearchCalcVO">
+ <!-- 반드시실행되어야하는 쿼리 -->
+	select count(*) cnt
+
+		from (select title, id
+	        from  (select  b.title, p.id
+						from	book b, purchase p
+							where (b.book_code=p.book_code)
+
+	<if test='keyword != null and !keyword.equals("")'> <!-- 조건에 따라 if를 타서 다이나믹쿼리가 잘 실행되는가 -->
+	AND ${field} like '%'||#{ keyword }||'%'
+	</if>
+))
+</select>
+
+<select id="selectTotalCountR" resultType="int" parameterType="kr.co.jinibooks.vo.SearchCalcVO">
+	<!-- 반드시실행되어야하는 쿼리 -->
+	
+	select count(*) cnt
+
+		from (select title, id
+	        from  (select  b.title, r.id
+						from	book b, purchase r
+							where (b.book_code=r.book_code)
+
+	<if test='keyword != null and !keyword.equals("")'> <!-- 조건에 따라 if를 타서 다이나믹쿼리가 잘 실행되는가 -->
+	AND ${field} like '%'||#{ keyword }||'%'
+	</if>
+
+))
+</select>
+
+
+<select id="selectPurchaseList" resultType="kr.co.jinibooks.domain.PurchaseListDomain" parameterType="kr.co.jinibooks.vo.SearchCalcVO">
+	select  code, id, title, use_cash, use_point, total_price, pay_method,  to_char(pay_date,'yyyy-mm-dd') pay_date
+	from (select rownum rnum, code, id, title, use_cash, use_point, total_price, pay_method, pay_date
+	        from  (select 	p.code, p.id, b.title, p.use_cash, p.use_point, b.sale_price-(p.use_cash+p.use_point) total_price, p.pay_method, p.pay_date
+						from	book b, purchase p
+						where (b.book_code=p.book_code)
+	
+	<if test='keyword != null and !keyword.equals("")'> 
+	    AND ${field} like '%'||#{ keyword }||'%'
+	</if>
+	
+	order by pay_date desc))	
+	where rnum between #{startNum} and #{endNum}
+
+</select>
+
+<select id="selectRentalList" resultType="kr.co.jinibooks.domain.RentalListDomain" parameterType="kr.co.jinibooks.vo.SearchCalcVO">
+	select  code, id, title, use_cash, use_point, total_price, pay_method,  to_char(pay_date,'yyyy-mm-dd') pay_date, to_char(rental_start,'yyyy-mm-dd') rental_start,  to_char(rental_end,'yyyy-mm-dd') rental_end
+	from (select rownum rnum, code, id, title, use_cash, use_point, total_price, pay_method, pay_date, rental_start, rental_end
+	        from  (select	 r.code, r.id, b.title, r.use_cash, r.use_point, b.rental_price-(r.use_cash+r.use_point) total_price, r.pay_method, r.pay_date, r.rental_start, r.rental_end
+						from	book b, rental r
+						where (b.book_code=r.book_code)
+	
+	<if test='keyword != null and !keyword.equals("")'> 
+	    AND ${field} like '%'||#{ keyword }||'%'
+	</if>
+	
+	order by pay_date desc))	
+	where rnum between #{startNum} and #{endNum}
+
+</select>
+
+
+</mapper>
+
+
+
+

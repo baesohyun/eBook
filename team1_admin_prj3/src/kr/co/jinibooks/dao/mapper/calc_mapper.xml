@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.jinibooks.dao.mapper.CalcMapper">
+
+<!-- 조회 컬럼과 setter method를 미리 매핑 시키는 resultMap 사용  -->
+<!-- column : 컬럼명 /  property : setter명  property는 대소문자 구분  -->
+<resultMap type="kr.co.jinibooks.domain.PurchaseListDomain" id="purchaseListMap">
+	<result column="code" property="code"/> 
+	<result column="id" property="id"/>
+	<result column="title" property="title"/>
+	<result column="use_cash" property="use_cash"/>
+	<result column="use_point" property="use_point"/>
+	<result column="total_price" property="total_price"/>
+	<result column="pay_method" property="pay_method"/>
+	<result column="pay_date" property="pay_date"/>
+</resultMap> 
+
+<resultMap type="rld" id="rentalListMap">
+	<result column="code" property="code"/> 
+	<result column="id" property="id"/>
+	<result column="title" property="title"/>
+	<result column="use_cash" property="use_cash"/>
+	<result column="use_point" property="use_point"/>
+	<result column="total_price" property="total_price"/>
+	<result column="pay_method" property="pay_method"/>
+	<result column="pay_date" property="pay_date"/>
+	<result column="rental_start" property="rental_start"/>
+	<result column="rental_end" property="rental_end"/>
+</resultMap> 
+
+<!--  purchase 메인 화면에서 출력 -->
+<select id="selectAllCalc" resultMap="purchaseListMap"> <!-- Handler에서 찾을 ID -->
+	
+	SELECT		P.CODE, P.ID, B.TITLE, P.USE_CASH, P.USE_POINT, B.SALE_PRICE-(P.USE_CASH+P.USE_POINT)TOTAL_PRICE, P.PAY_METHOD, to_char(P.PAY_DATE,'yyyy-mm-dd') PAY_DATE
+	FROM			BOOK B, PURCHASE P
+	WHERE		(B.BOOK_CODE=P.BOOK_CODE);
+	ORDER BY	PAY_DATE DESC
+	
+</select> 
+
+<!--  rental 메인 화면에서 출력 -->
+<select id="selectAllRental" resultMap="rentalListMap"> <!-- Handler에서 찾을 ID -->
+	
+	SELECT		R.CODE, R.ID, B.TITLE, R.USE_CASH, R.USE_POINT, B.RENTAL_PRICE-(R.USE_CASH+R.USE_POINT) TOTAL_PRICE, R.PAY_METHOD,
+	to_char(R.PAY_DATE,'yyyy-mm-dd') PAY_DATE, to_char(R.RENTAL_START,'yyyy-mm-dd') RENTAL_START , to_char(R.RENTAL_END,'yyyy-mm-dd') RENTAL_END
+	FROM			BOOK B, RENTAL R
+	WHERE		(B.BOOK_CODE=R.BOOK_CODE);
+	ORDER BY	PAY_DATE DESC
+</select> 
+
+
+
+
+</mapper>

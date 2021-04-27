@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.jinibooks.dao.BookMapper">
+				<!-- main_searchBook -->
+				<!-- 12/8  ***********수정  -->
+	<select id="selectSearchBook" resultType="sbd" parameterType="kr.co.jinibooks.vo.SearchBookPageVO">
+	
+		select r, title, rating, author,sale_price, rental_price,img ,company ,intro,book_code, sale_class ,code
+		from(select rownum r, title, rating, author,sale_price, rental_price,img ,company ,intro,book_code, sale_class, code
+		from book b, book_category c
+		where  b.category_code=c.code and title like '%'||#{keyword}||'%')
+		where r between ${startNum} and ${endNum}
+		
+	</select>
+	
+	<!--이름순으로 조회 -->
+	<select id="selectSearchNameBook" resultType="kr.co.jinibooks.domain.SearchNewBookDomain" parameterType="kr.co.jinibooks.vo.SearchBookPageVO">
+	select r,title, rating, author,sale_price, rental_price,img ,company ,intro,book_code, sale_class,code
+	from(select rownum r,title, rating, author,sale_price, rental_price,img ,company ,intro,book_code, sale_class,code
+	from(select title, rating, author,sale_price, rental_price,img ,company ,intro,book_code, sale_class,code
+	from book b, book_category c
+	where  b.category_code=c.code and title like '%'||#{keyword}||'%'
+	order by title)
+	order by r)
+	where r between ${startNum} and ${endNum}
+	</select>
+	
+	
+	<!-- 최신순으로 조회 -->
+	<select id="selectSearchNewBook" resultType="kr.co.jinibooks.domain.SearchNewBookDomain" parameterType="kr.co.jinibooks.vo.SearchBookPageVO">
+	select r,title, rating, author,sale_price, rental_price,img ,company ,intro,book_code, sale_class,code
+	from(select rownum r,title, rating, author,sale_price, rental_price,img ,company ,intro,book_code, sale_class,code
+	from(select title, rating, author,sale_price, rental_price,img ,company ,intro,book_code, sale_class,code
+	from book b, book_category c
+	where  b.category_code=c.code and title like '%'||#{keyword}||'%'
+	order by pub_date desc)
+	order by r)
+	where r between ${startNum} and ${endNum}
+	</select>
+	<!-- 평점순으로 조회 -->
+	<select id="selectSearchRatingBook" resultType="sbd" parameterType="kr.co.jinibooks.vo.SearchBookPageVO">
+	select r,title, rating, author,sale_price, rental_price,img ,company ,intro,book_code, sale_class,code
+	from(select rownum r,title, rating, author,sale_price, rental_price,img ,company ,intro,book_code, sale_class,code
+	from(select title, rating, author,sale_price, rental_price,img ,company ,intro,book_code, sale_class,code
+	from book b, book_category c
+	where  b.category_code=c.code and title like '%'||#{keyword}||'%'
+	order by rating desc)
+	order by r)
+	where r between ${startNum} and ${endNum} 
+	</select>
+				<!-- book_detail  -->
+				<!-- ************* 12/08 ************************** -->
+	 <resultMap type="kr.co.jinibooks.domain.SelectDetailBookDomain" id="sdbd">
+		<result column="title" property="title"/>
+		<result column="author" property="author"/>
+		<result column="translator" property="translator"/>
+		<result column="company" property="company"/>
+		<result column="img" property="img"/>
+		<result column="sale_price" property="salePrice"/>
+		<result column="rental_price" property="rentalPrice"/>
+		<result column="intro" property="intro"/>
+		<result column="review" property="review"/>
+		<result column="author_intro" property="authorIntro"/>
+		<result column="book_index" property="bookIndex"/>
+		<result column="rating" property="rating"/>
+		<result column="pub_date" property="pubDate"/>
+		<result column="sale_class" property="sale_class"/>
+		<result column="book_code" property="bookCode"/>
+		<result column="name" property="name"/>
+	</resultMap> 
+	<select id="selectDetailBook" resultMap="sdbd" parameterType="String">
+		select book_code, title, author, translator, company, img, sale_price, rental_price, intro,name,
+		 review, author_intro, book_index, rating, sale_class, to_char(pub_date,'yyyy-mm-dd') pub_date, code
+		from book b, BOOK_CATEGORY c
+		where b.CATEGORY_CODE=c.code and  book_code=#{code}
+	</select>
+
+	<resultMap type="scbd" id="scbdResult">
+		<result column="img" property="img"/>
+		<result column="title" property="title"/>
+		<result column="sale_price" property="salePrice"/>
+		<result column="author" property="author"/>
+		<result column="rental_price" property="rentalPrice"/>
+		<result column="sale_class" property="saleClass"/>
+		<result column="book_code" property="bookCode"/>
+		<result column="input_date" property="input_date"/>
+		<result column="code" property="code"/>
+	</resultMap> 	
+					<!--main_category  -->
+	<!-- 카테고리 선택시 베스트셀러 조회 -->
+	 <select id="selectCateBook" resultMap="scbdResult" parameterType="String">
+		select  r,sale_class,img,title,author,sale_price,rental_price,name,book_code,code
+		from (select rownum r,sale_class,img,title,author,sale_price,rental_price,c.name,book_code,code
+		from book b, book_category c
+		where b.category_code=c.code and c.name=#{cate}
+		order by rating desc)
+		 where r between 1 and 16
+	</select>
+	
+	<!-- 카테고리 선택시 신간도서 조회 -->
+	 <select id="selectCateNewBook" resultMap="scbdResult" parameterType="String">
+		select  r,sale_class,img,title,author,sale_price,rental_price,name,book_code,code
+		from (select rownum r,sale_class,img,title,author,sale_price,rental_price,c.name,book_code,code
+		from book b, BOOK_CATEGORY c
+		where b.CATEGORY_CODE=c.code and c.name=#{cate}
+		order by pub_date desc)
+		 where r between 1 and 16
+	</select>
+
+	<!-- 장바구니 조회  -->
+	<select id="selectCartList" resultType="kr.co.jinibooks.domain.SearchCartListDomain">
+	select code, id, book_code, to_char(add_date,'yyyy-mm-dd hh24:mi') add_date
+	from cart
+	<!-- where id=#{id} -->
+	</select>
+	
+	<!-- 비슷한 도서 조회  2019-12-07 ///////////////-->
+	<select id="selectSimilarList1" resultType="kr.co.jinibooks.domain.SearchRandomBookDomain" parameterType="String">
+	select r,img, book_code,title
+	from(
+	select rownum r,img, book_code, title
+	from(
+	select  img, book_code,title
+	from book
+	where category_code=#{cateCode}
+	order by dbms_random.value))
+	where r between 1 and 4
+	</select>
+	
+	<select id="selectSimilarList2" resultType="kr.co.jinibooks.domain.SearchRandomBookDomain" parameterType="String">
+	select r,img, book_code,title
+	from(
+	select rownum r,img, book_code, title
+	from(
+	select  img, book_code,title
+	from book
+	where category_code=#{cateCode}
+	order by dbms_random.value))
+	where r between 1 and 4
+	</select>
+	
+	<!-- 검색한 도서의 개수 -->
+	<select id="selectSearchCnt" resultType="int" parameterType="kr.co.jinibooks.vo.SearchBookPageVO">
+	select count(title) cnt
+	from book
+	where title like '%'||#{keyword}||'%'
+	</select>
+
+
+</mapper>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.jinibooks.dao.mapper.BookMapper">
+
+<!-- 조회 컬럼과 setter method를 미리 매핑 시키는 resultMap 사용  -->
+<!-- column : 컬럼명 /  property : setter명  property는 대소문자 구분  -->
+<resultMap type="kr.co.jinibooks.domain.BookListDomain" id="bookListMap">
+	<result column="sale_price" property="sale_price"/> 
+	<result column="rental_price" property="rental_price"/>
+	<result column="book_code" property="book_code"/>
+	<result column="sale_class" property="sale_class"/>
+	<result column="category_code" property="category_code"/>
+	<result column="title" property="title"/>
+	<result column="author" property="author"/>
+	<result column="input_date" property="input_date"/>
+	<result column="sale_state" property="sale_state"/>
+</resultMap>
+
+<!-- booklist 메인 화면에서 book 테이블의 북코드, 판매분류, 카테고리, 제목, 저자, 입력일, 판매가격, 대여가격, 판매상태 전체 출력 -->
+<select id="selectAllBook" resultMap="bookListMap"> <!-- Handler에서 찾을 ID -->
+	SELECT 		BOOK_CODE, SALE_CLASS, CATEGORY_CODE, TITLE, AUTHOR, TO_CHAR(INPUT_DATE,'YYYY-MM-DD') INPUT_DATE,  SALE_PRICE, RENTAL_PRICE, SALE_STATE
+	FROM 		BOOK
+	ORDER BY	INPUT_DATE DESC
+</select>
+
+<!-- 검색조건에 따른 book 테이블의 북코드, 판매분류, 카테고리, 제목, 저자, 입력일, 판매가격, 대여가격, 판매상태 조회 -->
+<!-- <select id="searchBookCondition" resultMap="bookListMap" parameterType="kr.co.jinibooks.vo.SearchBookVO">
+	SELECT 	BOOK_CODE, SALE_CLASS, CATEGORY_CODE, TITLE, AUTHOR, TO_CHAR(INPUT_DATE,'YYYY-MM-DD') INPUT_DATE,  SALE_PRICE, RENTAL_PRICE, SALE_STATE FROM BOOK
+	
+	<where>
+		<if test='keyword != null and !keyword.equals("")'> 
+			 ${title} like '%'||#{ keyword }||'%'
+		</if>
+	</where>
+	
+</select> -->
+
+<!-- 북코드를 입력(parameterType)받아 해당 코드의 상세정보를 조회(resultType, resultMap)  -->
+<select id="selectBookDetail" resultType="bdd" parameterType="String"> 
+	SELECT 		IMG, CATEGORY_CODE, TITLE, AUTHOR, TRANSLATOR,	COMPANY, SALE_CLASS, SALE_STATE, INTRO, REVIEW,	AUTHOR_INTRO, BOOK_INDEX, SALE_PRICE, RENTAL_PRICE
+	FROM			BOOK
+	WHERE		BOOK_CODE=#{ book_code }  <!-- parameterType이 기본형 & 참조형 데이터형일 경우 아무말 넣어도됨  --> 
+</select>
+
+
+<update id="updateBook" parameterType="buVO">  <!--  buVO : 업데이트할 값을 받을 VO -->
+	UPDATE  BOOK
+	SET		IMG=#{img}, CATEGORY_CODE=#{category_code}, TITLE=#{title}, AUTHOR=#{author}, TRANSLATOR=#{translator}, COMPANY=#{company}, 
+	 			SALE_CLASS=#{sale_class}, SALE_STATE=#{sale_state}, INTRO=#{intro}, 	REVIEW=#{review},	AUTHOR_INTRO=#{author_intro}, 	BOOK_INDEX=#{book_index},		
+                SALE_PRICE=#{sale_price}, RENTAL_PRICE=#{rental_price}
+	WHERE   BOOK_CODE=#{ book_code }   <!-- VO일때는 getter이기 때문에 대소문자 구분해줘야함 -->
+</update>
+
+<delete id="deleteBook" parameterType="String"> 
+	delete from book
+	where book_code=#{book_code}
+
+</delete>
+
+ <insert id="insertBook" parameterType="biVO">
+	INSERT INTO BOOK(IMG, CATEGORY_CODE, BOOK_CODE, TITLE, AUTHOR, TRANSLATOR, COMPANY, SALE_CLASS, SALE_STATE, 
+	 						INTRO, 	REVIEW,	AUTHOR_INTRO, 	BOOK_INDEX, SALE_PRICE, RENTAL_PRICE, INPUT_DATE, PUB_DATE) 
+	VALUES (#{img}, #{category_code}, book_code, #{title}, #{author}, #{translator}, #{company}, #{sale_class}, 'y', 
+	 			#{intro}, #{review},	 #{author_intro}, #{book_index}, #{sale_price}, #{rental_price}, sysdate, #{pub_date} )
+</insert>  
+
+
+</mapper>

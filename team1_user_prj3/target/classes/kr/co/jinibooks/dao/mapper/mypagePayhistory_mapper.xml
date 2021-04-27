@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.jinibooks.dao.maypagePayhistory_mapper">
+
+<select id="payHistory" resultType="kr.co.jinibooks.domain.MypagePayhistoryDomain" parameterType="String">
+	select p.pay_date, b.title, b.sale_price-(p.use_cash+p.use_point) totalPrice, p.pay_method
+	from purchase p, book b
+	where (p.book_code=b.book_code) and id=#{id}
+	union
+	select r.pay_date, b.title, b.rental_price-(r.use_cash+r.use_point) totalPrice, r.pay_method
+	from rental r, book b
+	where (r.book_code=b.book_code) and id=#{id}
+	order by pay_date desc
+</select>
+
+<select id="selectTotalpage" resultType="int" parameterType="String">
+select count(*) cnt
+from(select p.pay_date, b.title, b.sale_price-(p.use_cash+p.use_point) totalPrice, p.pay_method
+from purchase p, book b
+where (p.book_code=b.book_code) and id=#{id}
+union
+select r.pay_date, b.title, b.rental_price-(r.use_cash+r.use_point) totalPrice, r.pay_method
+from rental r, book b
+where (r.book_code=b.book_code) and id=#{id})
+</select>
+</mapper>

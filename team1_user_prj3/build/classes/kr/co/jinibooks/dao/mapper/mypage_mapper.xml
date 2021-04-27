@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.jinibooks.dao.maypage_mapper">
+
+<resultMap id="bookListMap" type="BookDomain">
+  <result column="title" property="title"/>
+  <result column="author" property="author"/>
+  <result column="img" property="img"/>
+  <result column="flag" property="flag"/>
+</resultMap>
+
+<select id="payBookList_5" resultMap="bookListMap" parameterType="String">
+ <![CDATA[ 
+SELECT BC.NAME CATEGORY, TITLE, AUTHOR, IMG, flag
+FROM   BOOK_CATEGORY BC, BOOK B, 
+               (SELECT FLAG, BOOK_CODE
+                FROM (SELECT ROWNUM R, FLAG, BOOK_CODE
+                      FROM (SELECT FLAG, BOOK_CODE
+                            FROM (SELECT FLAG, BOOK_CODE, ID, PAY_DATE
+                                  FROM PURCHASE
+                                  UNION
+                                  SELECT FLAG, BOOK_CODE, ID, PAY_DATE
+                                  FROM RENTAL)
+                            WHERE ID = #{ ID }
+                            ORDER BY PAY_DATE DESC))
+                WHERE R <= 5) SEARCH
+WHERE (B.CATEGORY_CODE = BC.CODE) and (B.BOOK_CODE = SEARCH.BOOK_CODE)
+]]>
+</select>
+
+<select id="payBookList_All" resultMap="bookListMap" parameterType="String">
+SELECT BC.NAME CATEGORY, TITLE, AUTHOR, IMG, FLAG
+FROM   BOOK_CATEGORY BC, BOOK B, (SELECT FLAG, BOOK_CODE
+                                  FROM (SELECT FLAG, BOOK_CODE, ID, PAY_DATE
+                                        FROM PURCHASE
+                                        UNION
+                                        SELECT FLAG, BOOK_CODE, ID, PAY_DATE
+                                        FROM RENTAL)
+                                  WHERE ID = #{ ID }
+                                  ORDER BY PAY_DATE DESC)SEARCH
+WHERE (B.CATEGORY_CODE = BC.CODE) AND (B.BOOK_CODE = SEARCH.BOOK_CODE)
+</select>
+
+</mapper>

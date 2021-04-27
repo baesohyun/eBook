@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration> 
+<properties resource="properties/database.properties"/>
+<typeAliases>
+	<typeAlias type="kr.co.jinibooks.domain.newBookDomain" alias="nbd"/>
+	<typeAlias type="kr.co.jinibooks.domain.cate_best_bookDomain" alias="cbbd"/>
+	
+	<typeAlias type="kr.co.jinibooks.domain.SearchBookListDomain" alias="sbd" />
+	<typeAlias type="kr.co.jinibooks.domain.SelectCateBookDomain" alias="scbd" />
+	
+	<typeAlias type="kr.co.jinibooks.domain.BookDomain" alias="BookDomain"/>
+	<typeAlias type="kr.co.jinibooks.domain.MemberInfoDomain" alias="MemberInfoDomain"/>
+	<typeAlias type="kr.co.jinibooks.vo.JoinVO" alias="JoinVO"/>
+	<typeAlias type="kr.co.jinibooks.vo.LoginVO" alias="LoginVO"/>
+	<typeAlias type="kr.co.jinibooks.vo.IDandEmailandTempPWVO" alias="idAndEmailAndTempPWVO"/>
+</typeAliases>
+  <environments default="development">
+    <environment id="development">
+      <transactionManager type="JDBC"/>
+      <dataSource type="POOLED">
+        <property name="driver" value="${driver}"/>
+        <property name="url" value="${url}"/>
+        <property name="username" value="ebook"/>
+        <property name="password" value="1234"/>
+      </dataSource>
+    </environment>
+  </environments>
+  <mappers>
+    <mapper resource="kr/co/jinibooks/dao/mapper/main_mapper.xml"/>
+    <mapper resource="kr/co/jinibooks/dao/mapper/book_mapper.xml"/>
+    <mapper resource="kr/co/jinibooks/dao/mapper/pay_mapper.xml"/>
+    <mapper resource="kr/co/jinibooks/dao/mapper/cart_mapper.xml"/>
+    
+    <mapper resource="kr/co/jinibooks/dao/mapper/member_mapper.xml"/>
+    <mapper resource="kr/co/jinibooks/dao/mapper/mypage_mapper.xml"/>
+    <mapper resource="kr/co/jinibooks/dao/mapper/mypagePayhistory_mapper.xml"/>
+    <mapper resource="kr/co/jinibooks/dao/mapper/mypage_myBook_mapper.xml"/>
+    
+    <mapper resource="kr/co/jinibooks/dao/mapper/notice_mapper.xml"/>
+    <mapper resource="kr/co/jinibooks/dao/mapper/question_mapper.xml"/> 
+  </mappers>
+</configuration>

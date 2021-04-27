@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.jinibooks.dao.payMapper">
+
+<!-- 선택된 구매도서를 결제창에 조회  -->
+<select id="selectSalePayBook" resultType="kr.co.jinibooks.domain.SelectPayDomain" parameterType="String">
+	select book_code, title, sale_price price, sale_class, img
+	from book
+	where book_code=#{code}
+</select>
+
+<!-- 선택된 대여도서를 결제창에 조회  -->
+<select id="selectRentalPayBook" resultType="kr.co.jinibooks.domain.SelectPayDomain" parameterType="String">
+	select book_code, title, rental_price price, sale_class, img
+	from book
+	where book_code=#{code}
+</select>
+
+<select id="selectCashPoint" resultType="kr.co.jinibooks.domain.CashPointDomain" parameterType="String">
+	select cash, point
+	from member
+	where id=#{id}
+</select>
+
+<!-- 구매테이블에 추가  -->
+<insert id="insertPurchase" parameterType="kr.co.jinibooks.vo.paymentVO2">
+	insert into purchase 
+	values('p',purchase_code,#{id},#{bookCode},#{useCash},#{usePoint},#{payMethod},sysdate)
+</insert>
+	<!-- insert into purchase values('p',purchase_code,?,?,?,?,?,sysdate) -->
+
+<!-- 대여테이블에 추가  -->
+<insert id="insertRental" parameterType="kr.co.jinibooks.vo.paymentVO2">
+	insert into rental
+	values('r',rental_code,#{id},#{bookCode},#{useCash},#{usePoint},#{payMethod},sysdate,to_char(sysdate,'yyyy-mm-dd'),to_char(sysdate+7,'yyyy-mm-dd'))
+</insert>
+
+<!-- 사용된 캐시와 포인트 수정  -->
+<update id="updateCashPoint" parameterType="kr.co.jinibooks.vo.CashPointVO">
+	update member
+	set  cash=cash-#{useCash}, point=point-#{usePoint}
+	where id=#{id}
+</update>
+
+<!-- 카트에 선택된 도서를 결제 시, 선택된 도서를 카트 테이블에 삭제 (구매인경우)  -->
+<delete id="deletePayedCart" parameterType="kr.co.jinibooks.vo.PayedCartDeleteVO2">
+delete
+from cart
+where book_code=#{bookCode} and id=#{id}
+</delete>
+
+</mapper>

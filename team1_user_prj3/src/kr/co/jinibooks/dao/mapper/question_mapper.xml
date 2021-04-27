@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- namespace는 package와 같습니다. -->
+<mapper namespace="kr.co.jinibooks.dao.question_mapper">
+
+<select id="selectTotalCount2" resultType="int" parameterType="kr.co.jinibooks.vo.QuestionSearchVO">
+  select count(*) cnt 
+  from inquiry
+  where id=#{id}
+  <if test='keyword != null and !keyword.equals("")'>
+    <!-- <if test="keyword ne null && !keyword.equals('')"> -->
+    <!-- 홑따옴표로 묶어 줄수 도 있다. -->
+    and ${field} like '%'||#{keyword}||'%'
+  </if>
+</select>
+
+<select id="selectBoardList2" resultType="kr.co.jinibooks.domain.QuestionListDomain" 
+        parameterType="kr.co.jinibooks.vo.QuestionSearchVO">
+        
+select num,id,subject,content,ATTACH_FILE_NAME,to_char(w_day,'yyyy-mm-dd') w_day,ANSWER,decode(ANSWER_FLAG,'Y','답변','N','미답변') answer_flag,ADMIN_ID
+from (select rownum r, num,id,subject,content,ATTACH_FILE_NAME,W_DAY,ANSWER,ANSWER_FLAG,ADMIN_ID
+	  from (select num,id,subject,content,ATTACH_FILE_NAME,W_DAY,ANSWER,ANSWER_FLAG,ADMIN_ID
+			from INQUIRY
+			where id=#{id}
+			<if test='keyword != null and !keyword.equals("")'>
+			   and ${ field } like '%'||#{ keyword }||'%'
+			</if>
+            order by num desc))
+where r between #{ startNum } and #{ endNum }        
+          
+</select>
+
+ <select id="QuestionDetail" resultType="kr.co.jinibooks.domain.QuestionListDomain" parameterType="String">
+select num,id,subject,content,ATTACH_FILE_NAME,to_char(w_day,'yyyy-mm-dd') w_day,ANSWER,ANSWER_FLAG,ADMIN_ID
+from INQUIRY
+where num = #{num}
+</select>
+
+<insert id="QuestionInsert"  parameterType="kr.co.jinibooks.vo.QuestionVO">
+insert into inquiry(num,id,subject,content,ATTACH_FILE_NAME,w_day,ANSWER,ANSWER_FLAG,ADMIN_ID)
+values(inquiry_code,#{ id },#{subject},#{content},null,sysdate,null,'N',null)
+</insert>
+
+
+
+
+</mapper>

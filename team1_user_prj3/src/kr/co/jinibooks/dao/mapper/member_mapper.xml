@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.jinibooks.dao.member_mapper">
+
+<select id="selectIDOverlap" resultType="String" parameterType="String">
+select id
+from member
+where id = #{ id }
+</select>
+
+<select id="selectEmailOverlap" resultType="String" parameterType="String">
+select email
+from member
+where email = #{ email }
+</select>
+
+<insert id="insertJoin" parameterType="JoinVO">
+insert into member(id, passwd, email, name, birth_year, gender)
+values(#{inputID}, #{inputPW}, #{inputEmail}, #{inputName}, #{inputBirthYear}, #{gender})
+</insert>
+
+<select id="selectIDPW" resultType="String" parameterType="loginVO">
+select name
+from member
+where id = #{ inputID } and passwd = #{ inputPW }
+</select>
+
+<select id="selectIDEmail" resultType="String" parameterType="idAndEmailAndTempPWVO">
+select name
+from member
+where id = #{ inputID } and email = #{ inputEmail }
+</select>
+
+<select id="selectIDWithEmail" resultType="String" parameterType="String">
+select id
+from member
+where email = #{ email }
+</select>
+
+<resultMap type="MemberInfoDomain" id="esdResult">
+  <result column="id" property="id"/>
+  <result column="name" property="name"/>
+  <result column="email" property="email"/>
+</resultMap>
+
+<select id="selectMemberInfo" resultMap="esdResult" parameterType="String">
+select id, name, email
+from member
+where id = #{id}
+</select>
+
+<update id="updateTempPW" parameterType="idAndEmailAndTempPWVO">
+update member
+set passwd = #{tempPW}
+where id = #{inputID} and email = #{inputEmail}
+</update>
+
+<update id="updateLoginDate" parameterType="String">
+update member
+set login_date = sysdate
+where id = #{id}
+</update>
+
+</mapper>

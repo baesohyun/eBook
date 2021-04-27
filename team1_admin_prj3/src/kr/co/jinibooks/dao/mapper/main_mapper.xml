@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.jinibooks.dao.mapper.mainMapper">
+
+
+	<select id="selectAdmin" resultType="String"
+		parameterType="kr.co.jinibooks.vo.LoginVO">
+		select name
+		from admin
+		where id = #{id} and passwd = #{passwd}
+	</select>
+
+
+	<select id="selectCnt" resultType="int">
+		select count(*) cnt
+		from member
+		where to_char(login_date,'yyyy-mm-dd')=to_char(sysdate,'yyyy-mm-dd')
+	</select>
+
+
+	<select id="selectJoinCnt" resultType="int">
+		select count(*) cnt
+		from member
+		where to_char(input_date, 'yyyy-mm-dd')=to_char(sysdate,'yyyy-mm-dd')
+	</select>
+
+
+	<select id="selectAllCnt" resultType="int">
+		select count(*) cnt
+		from member
+	</select>
+
+
+	<select id="selectQNA" resultType="int">
+		select count(*) cnt
+		from inquiry
+		where answer_flag='N'
+	</select>
+
+
+	<select id="selectOrderCnt" resultType="int">
+		select count(*) cnt
+		from purchase
+		where to_char(pay_date,'yyyy-mm-dd')=to_char(sysdate,'yyyy-mm-dd')
+	</select>
+
+
+	<select id="selectOrderPrice" resultType="int">
+		select nvl(sum(use_cash),0) cashSum
+		from purchase
+		where to_char(pay_date,'yyyy-mm-dd')=to_char(sysdate,'yyyy-mm-dd')
+	</select>
+
+	<resultMap type="kr.co.jinibooks.domain.MainNoticeListDomain" id="selectMainNoticeList">
+		<result column="subject" property="subject"/>
+		<result column="w_day" property="w_day"/>
+	</resultMap>
+
+	<select id="selectMainNoticeList" resultMap="selectMainNoticeList">
+		select subject, to_char(w_day,'yyyy-mm-dd') w_day
+		from notice
+		order by w_day desc
+	</select>
+</mapper>

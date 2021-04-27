@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.jinibooks.dao.BookListMapper"> <!--  namespace : 패키지와 같음 -->
+
+<select id="selectTotalCount" resultType="int" parameterType="kr.co.jinibooks.vo.SearchBookVO">
+	select count(*) cnt from book <!-- 반드시실행되어야하는 쿼리 -->
+	<if test='keyword != null and !keyword.equals("")'> <!-- 조건에 따라 if를 타서 다이나믹쿼리가 잘 실행되는가 -->
+	where ${field} like '%'||#{ keyword }||'%'
+	</if>
+</select>
+
+<select id="selectBookList" resultType="kr.co.jinibooks.domain.BookListDomain" parameterType="kr.co.jinibooks.vo.SearchBookVO">
+	select  book_code, sale_class, category_code, title, author, to_char(input_date,'yyyy-mm-dd') input_date,  sale_price, rental_price, sale_state
+	from (select rownum rnum, book_code, sale_class, category_code, title, author, input_date,  sale_price, rental_price, sale_state
+	        from  (select  book_code, sale_class, category_code, title, author, input_date,  sale_price, rental_price, sale_state	
+		              from book
+	<where>
+
+	<if test='category_code != null and !category_code.equals("")'> 
+	    AND category_code = #{ category_code }
+	</if>
+	<if test='keyword != null and !keyword.equals("")'> 
+	    AND ${field} like '%'||#{ keyword }||'%'
+	</if>
+	<if test='sale_state != null and !sale_state.equals("")'> 
+	    AND sale_state = #{ sale_state }
+	</if>
+	<if test='sale_class != null and !sale_class.equals("")'> 
+	    AND sale_class = #{ sale_class }
+	</if>
+	<if test='sale_class != null and !sale_class.equals("")'> 
+	    AND sale_class = #{ sale_class }
+	</if>
+	
+<!-- 	<if test='sale_price != null and !sale_price.equals("")'> 
+	    AND sale_price between #{ sale_price1 } and  #{ sale_price2 }
+	</if> -->
+	</where>	              
+
+	order by input_date desc))	
+	where rnum between #{startNum} and #{endNum} 
+	
+<!-- 	<where>
+	<if test='keyword != null and !keyword.equals("")'> 
+	where ${field} like '%'||#{ keyword }||'%'
+	</if>
+	<if test='category_code != null and !category_code.equals("")'> 
+	where ${category_code} like '%'||#{ category_code }||'%'
+	</if>
+	rnum between #{startNum} and #{endNum}
+	</where>
+	
+	order by input_date desc))	 -->
+
+</select>
+
+
+
+</mapper>
+
+
+
+

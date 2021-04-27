@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<properties resource="properties/database.properties"/>
+<typeAliases>
+	<typeAlias type="kr.co.jinibooks.domain.BookDetailDomain" alias="bdd"/>
+	<typeAlias type="kr.co.jinibooks.domain.RentalListDomain" alias="rld"/>
+	<typeAlias type="kr.co.jinibooks.vo.BookUpdateVO" alias="buVO"/>
+	<typeAlias type="kr.co.jinibooks.vo.BookInsertVO" alias="biVO"/>
+</typeAliases>
+  <environments default="development">
+    <environment id="development">
+      <transactionManager type="JDBC"/>
+      <dataSource type="POOLED">
+        <property name="driver" value="${driver}"/>
+        <property name="url" value="${url}"/>
+        <property name="username" value="${username}"/>
+        <property name="password" value="${password}"/>
+      </dataSource>
+    </environment>
+  </environments>
+  <mappers>
+    <mapper resource="kr/co/jinibooks/dao/mapper/book_mapper.xml"/>
+    <mapper resource="kr/co/jinibooks/dao/mapper/calc_mapper.xml"/>
+    <mapper resource="kr/co/jinibooks/dao/mapper/book_list_mapper.xml"/>
+    <mapper resource="kr/co/jinibooks/dao/mapper/calc_list_mapper.xml"/> 
+    <mapper resource="kr/co/sist/dao/mapper/notice_mapper.xml"/>
+    <mapper resource="kr/co/sist/dao/mapper/question_mapper.xml"/> 
+  </mappers>
+</configuration>

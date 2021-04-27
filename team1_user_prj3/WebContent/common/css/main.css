@@ -1,0 +1,89 @@
+@charset "UTF-8";
+
+@font-face { font-family: 'BMHANNAAir' ; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.0/BMHANNAAir.woff') format('woff'); font-weight: normal; font-style: normal; }
+@font-face { font-family: 'Atomy-Bold' ; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.0/Atomy-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
+@font-face { font-family: 'RIDIBatang' ; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff'); font-weight: normal; font-style: normal; }
+
+@font-face { font-family: 'HCRDotum'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.0/HCRDotum.woff') format('woff'); font-weight: normal; font-style: normal; }
+
+#books, #MainContainer, #container{
+	margin: 0px auto;
+	width:1500px;
+	min-height: 100vh;
+}
+
+.row1{
+	display: flex;
+	flex-wrap: wrap;
+}
+
+#logo,#cate, #hContent, #hContent2, .container1, .pos-f-t, #cashBtn, .list-group {
+	font-family: Atomy-Bold
+}
+
+#MainContainer, #container{
+	font-family: HCRDotum
+}
+
+#join,#login,#myPage,#cart,#logout{
+	font-weight: bold; 
+	color: #EE4137;
+	margin: 10px; 
+	margin-top: 15px;
+}
+
+#cateName_left,#cateName_right,#cashBtn,#join,#login,#myPage,#cart#myBook,#subCateName{
+	font-size: 16px;
+	text-decoration: none
+}
+
+#cateName_right:hover{
+	font-size:17px;
+}
+
+#logo, .container1,#cateName_right{
+	color: #EE4137; 
+} 
+
+#cateName_left,#cashBtn{
+	color:#f0f0f0;
+}
+
+
+#subCateName, .sub{
+	font-size: 16px;
+	font-weight: bold;
+	color:#787878;
+	margin-bottom:30px;
+	margin-top:30px;
+	
+}
+
+#novel,#economy,#social,#myself,#self-improvement,#travel,#science,#health,#cartoon{
+	text-decoration: none
+}
+
+#header{ height: 150px; position:relative; background: #FFFFFF;}
+#hLogo{width:1000px;height: 80px; margin:10px auto; margin-top:30px; padding-left:50px;}
+#logo{font-size: 30px; font-weight: bold;  margin: 10px;}
+ #naviBar{height: 60px ; border:1px solid #EE4137;max-width: 1800px} 
+
+#searchTxt{width:350px; top:10px;}
+
+#cateBtn{margin-left:10px; background-color: #EE4137;}
+#cashBtn{width:100px; margin-left: 130px; margin-top: 10px}
+
+.sub:hover{
+	color:#EE4137;
+	text-decoration: none;
+}
+
+
+
+#footer{ height: 180px; background-color: #F2F4F5;}
+#fLogo{  width :180px; height: 130px; padding-top: 50px; padding-left: 40px; text-align: right;}
+#fBookLogo{margin-top: 25px; font-size: 25px; font-weight: bold; margin-left: 10px}
+#fContentCenter{ height: 150px; font-size: 13px;padding-left:80px ;margin-top:15px;  }
+#fContentSide{ height: 150px; padding-top:25px; margin-top: 15px;border-left: solid 1px #515151 ; font-weight: bold;}
+#fSideSub{border:1px solid #333;  padding:2px;font-size: 11px;}
+
